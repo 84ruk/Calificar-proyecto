@@ -1,0 +1,16 @@
+{
+      "type": "postgres",
+      "host": "localhost",
+      "port": 5432,
+      "username": "postgres",
+      "password": "password",
+      "database": "CancunApp",
+      "synchronize": true,
+      "logging": true,
+      "entities": ["src/auth/entities/**/*.entity.ts"],
+      "migrations": ["src/migrations/*.ts"],
+      "cli": {
+        "entitiesDir": "src/auth/entities",
+        "migrationsDir": "src/migrations"
+      }
+    }
