@@ -1,10 +1,11 @@
 // profes.controller.ts
 
-import { Controller, Post, Body, Param, Delete, Put, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Delete, Put, Get, Query } from '@nestjs/common';
 import { ProfessorService } from './professor.service';
 import { CreateProfessorDto } from './dto';
 import { RatingCommentDto } from './dto';
 import { Professor } from './entities/professor.entity';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('professors')
 export class ProfessorsController {
@@ -18,6 +19,12 @@ export class ProfessorsController {
   @Get(':id')
   async getProfessor(@Param('id') professorId: string): Promise<Professor> {
     return await this.professorService.getProfessorById(professorId);
+  }
+
+  @Get()
+  findAll(@Query() paginationDto: PaginationDto) {
+    // console.log(paginationDto)
+    return this.professorService.findAll(paginationDto);
   }
 
 
