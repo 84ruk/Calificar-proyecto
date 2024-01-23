@@ -7,7 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 
 import { AuthModule } from './auth/auth.module';
-import { PetsModule } from './pets/pets.module';
+import { ProfessorModule } from './professor/professor.module';
 import { FilesModule } from './files/files.module';
 
 @Module({
@@ -34,7 +34,7 @@ import { FilesModule } from './files/files.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname,'..','public'), 
     }),
-    PetsModule,
+    ProfessorModule,
     FilesModule,
     AuthModule,
   ],

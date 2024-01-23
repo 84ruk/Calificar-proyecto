@@ -1,13 +1,10 @@
 // comment.entity.ts
 
-import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { Professor } from './professor.entity';
 
 @Entity()
 export class Comment {
-
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
 
   @Column({ length: 500 })
   comment: string;

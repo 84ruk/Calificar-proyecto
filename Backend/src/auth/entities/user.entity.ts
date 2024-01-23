@@ -1,7 +1,7 @@
+import { Professor } from 'src/professor/entities/professor.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 /* import { Product } from '../../products/entities'; */
-import { Pet } from '../../pets/entities/pet.entity';
-import { Professor } from 'src/professor/model/professor.model';
+
 
 @Entity('users')
 export class User {
@@ -33,8 +33,6 @@ export class User {
     })
     roles: string[];
 
-    @OneToMany(() => Pet, pet => pet.rescuer)
-    pets: Pet[];
 
     @ManyToMany(() => Professor, (professor) => professor.usersRated)
     @JoinTable()

@@ -4,7 +4,8 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { ProfessorService } from './professor.service';
 import { ProfessorsController } from './professor.controller';
-import { Professor } from './model/professor.model';
+import { Professor } from './entities/professor.entity';
+import { Comment } from './entities/comment.entity';
 
 
 
@@ -12,7 +13,7 @@ import { Professor } from './model/professor.model';
   controllers: [ProfessorsController],
   providers: [ProfessorService],
   imports: [
-    TypeOrmModule.forFeature([ Professor  ]),
+    TypeOrmModule.forFeature([ Professor, Comment  ]),
     AuthModule,
   ],
   exports: [
@@ -20,4 +21,4 @@ import { Professor } from './model/professor.model';
     TypeOrmModule,
   ]
 })
-export class PetsModule {}
+export class ProfessorModule {}

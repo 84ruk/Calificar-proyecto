@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateProfessorDto } from './dto';
 import { RatingCommentDto } from './dto';
 import { Professor } from './entities/professor.entity';
+import { Comment } from './entities/comment.entity';
 
 @Injectable()
 export class ProfessorService {
@@ -45,19 +46,19 @@ export class ProfessorService {
   async addRatingComment(professorId: string, ratingCommentDto: RatingCommentDto): Promise<Professor> {
     const professor = await this.getProfessorById(professorId);
     
-    const comment = {
-      comment: ratingCommentDto.comment,
-      rating: ratingCommentDto.rating,
-      professor: professor,
-    };
-
+    const comment = new Comment();
+    comment.comment = ratingCommentDto.comment;
+    comment.rating = ratingCommentDto.rating;
+    comment.professor = professor;
+  
     professor.comments.push(comment);
-
+  
     // Recalcula la calificación promedio
     professor.averageRating = this.calculateAverageRating(professor);
-
+  
     return await this.professorRepository.save(professor);
   }
+  
 
   private calculateAverageRating(professor: Professor): number {
     const totalRating = professor.comments.reduce((sum, comment) => sum + comment.rating, 0);

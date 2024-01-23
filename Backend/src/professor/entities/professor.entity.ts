@@ -15,10 +15,8 @@ export class Professor {
   @Column({ length: 100 })
   lastName: string;
 
-  @Column({ type: 'float', default: 0 }) // Añadida la propiedad averageRating
+  @Column({ type: 'float', default: 0 })
   averageRating: number;
-
-  // Otros campos relevantes para el profesor (añadir según sea necesario)
 
   @ManyToMany(() => User, (user) => user.professorsRated)
   @JoinTable()

@@ -7,7 +7,7 @@
       "database": "CancunApp",
       "synchronize": true,
       "logging": true,
-      "entities": ["src/auth/entities/**/*.entity.ts"],
+      "entities": ["src/professor/entities/**/*.entity.ts", "src/auth/entities/**/*.entity.ts" ],
       "migrations": ["src/migrations/*.ts"],
       "cli": {
         "entitiesDir": "src/auth/entities",
