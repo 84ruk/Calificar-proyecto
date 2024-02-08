@@ -46,28 +46,40 @@ export class AuthService {
 
   }
 
-
-
-  async login( loginUserDto: LoginUserDto ) {
-
-    const { password, email } = loginUserDto;
-
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: { email: true, password: true, id: true } //! OJO!
-    });
-
-    if ( !user ) 
-      throw new UnauthorizedException('Credentials are not valid (email)');
-      
-    if ( !bcrypt.compareSync( password, user.password ) )
-      throw new UnauthorizedException('Credentials are not valid (password)');
-
-    return {
-      ...user,
-      token: this.getJwtToken({ id: user.id })
-    };
+  async login(loginUserDto: LoginUserDto): Promise<{ status: string; user?: any; token?: string; message?: string }> {
+    try {
+      const { password, email } = loginUserDto;
+  
+      const user = await this.userRepository.findOne({
+        where: { email },
+        select: { email: true, password: true, id: true } //! OJO!
+      });
+  
+      if (!user) {
+        throw new UnauthorizedException('Credentials are not valid (email)');
+      }
+  
+      if (!bcrypt.compareSync(password, user.password)) {
+        throw new UnauthorizedException('Credentials are not valid (password)');
+      }
+  
+      return {
+        status: 'success',
+        user: {
+          id: user.id,
+          email: user.email,
+          // ... otras propiedades que desees incluir
+        },
+        token: this.getJwtToken({ id: user.id }),
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        message: error instanceof UnauthorizedException ? error.message : 'Error during login process',
+      };
+    }
   }
+  
 
   async checkAuthStatus( user: User ){
 

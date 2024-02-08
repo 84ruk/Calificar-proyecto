@@ -1,11 +1,12 @@
 // profes.controller.ts
 
-import { Controller, Post, Body, Param, Delete, Put, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Param, Delete, Put, Get, Query, NotFoundException } from '@nestjs/common';
 import { ProfessorService } from './professor.service';
 import { CreateProfessorDto } from './dto';
 import { RatingCommentDto } from './dto';
 import { Professor } from './entities/professor.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { classToPlain } from 'class-transformer';
 
 @Controller('professors')
 export class ProfessorsController {
@@ -17,8 +18,14 @@ export class ProfessorsController {
   }
 
   @Get(':id')
-  async getProfessor(@Param('id') professorId: string): Promise<Professor> {
-    return await this.professorService.getProfessorById(professorId);
+  async getProfessor(@Param('id') professorId: string): Promise<any> {
+    try {
+      const professor = await this.professorService.getProfessorById(professorId);
+      // Utiliza classToPlain para evitar el bucle circular
+      return classToPlain(professor);
+    } catch (error) {
+      throw new NotFoundException(`Professor with ID ${professorId} not found`);
+    }
   }
 
   @Get()

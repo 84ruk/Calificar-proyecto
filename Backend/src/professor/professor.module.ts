@@ -6,6 +6,7 @@ import { ProfessorService } from './professor.service';
 import { ProfessorsController } from './professor.controller';
 import { Professor } from './entities/professor.entity';
 import { Comment } from './entities/comment.entity';
+import { ProfessorComment } from './entities/professor-comment.entity';
 
 
 
@@ -13,7 +14,7 @@ import { Comment } from './entities/comment.entity';
   controllers: [ProfessorsController],
   providers: [ProfessorService],
   imports: [
-    TypeOrmModule.forFeature([ Professor, Comment  ]),
+    TypeOrmModule.forFeature([ Professor, Comment, ProfessorComment ]),
     AuthModule,
   ],
   exports: [

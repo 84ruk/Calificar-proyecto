@@ -2,6 +2,7 @@
 
 import { IsString, IsNotEmpty, IsArray, IsOptional, ValidateNested } from 'class-validator';
 import { RatingCommentDto } from './rating-comment.dto';
+import { Exclude } from 'class-transformer';
 
 export class CreateProfessorDto {
   @IsNotEmpty()
@@ -14,10 +15,11 @@ export class CreateProfessorDto {
 
   @IsOptional()
   @IsArray()
-  readonly features?: string[];
+  readonly professorCharacteristic?: string[];
 
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
+  @Exclude()
   readonly ratingsComments?: RatingCommentDto[];
 }

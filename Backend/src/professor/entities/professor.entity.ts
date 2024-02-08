@@ -1,8 +1,8 @@
 // professor.entity.ts
-
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Comment } from './comment.entity';
+import { ProfessorComment } from './professor-comment.entity';
 
 @Entity()
 export class Professor {
@@ -24,4 +24,8 @@ export class Professor {
 
   @OneToMany(() => Comment, (comment) => comment.professor)
   comments: Comment[];
+
+  @OneToMany(() => ProfessorComment, pc => pc.professor)
+  professorComments: ProfessorComment[];
+
 }
