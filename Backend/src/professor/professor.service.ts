@@ -1,6 +1,6 @@
 // profes.service.ts
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProfessorDto } from './dto';
@@ -63,8 +63,7 @@ export class ProfessorService {
     await this.professorRepository.remove(professor);
   }
   
-
-  async addRatingComment(professorId: string, ratingCommentDto: RatingCommentDto): Promise<{ averageRating: number; comments: Comment[]; characteristics: ProfessorCharacteristic[] }> {
+  async addRatingComment(professorId: string, ratingCommentDto: RatingCommentDto): Promise<{ averageRating: number; characteristics: ProfessorCharacteristic[] }> {
     try {
         if (!ratingCommentDto.professorCharacteristics || ratingCommentDto.professorCharacteristics.length === 0) {
             throw new BadRequestException('Professor characteristics array must not be empty');
@@ -82,7 +81,6 @@ export class ProfessorService {
 
         const mappedCharacteristics = validCharacteristics.map(characteristic => ProfessorCharacteristic[characteristic]);
 
-        console.log(mappedCharacteristics);
 
         const comment = new Comment();
         comment.comment = ratingCommentDto.comment;
@@ -99,17 +97,17 @@ export class ProfessorService {
         // Guarda la entidad Professor
         const savedProfessor = await this.professorRepository.save(professor);
 
-        // Devuelve solo la información necesaria
+        // Devuelve la información necesaria
         return {
             averageRating: savedProfessor.averageRating,
-            comments: savedProfessor.comments,
-            characteristics: mappedCharacteristics,
+            characteristics: mappedCharacteristics
         };
     } catch (error) {
         console.error('Error en addCommentToProfessor:', error);
-        throw error;
+        throw new InternalServerErrorException('Error creating comment for professor');
     }
 }
+
 
   
   private isValidProfessorCharacteristics(characteristics: ProfessorCharacteristic[]): boolean {
