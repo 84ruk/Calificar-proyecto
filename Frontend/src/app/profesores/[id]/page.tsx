@@ -1,4 +1,4 @@
-export const revalidate = 604800; //7 días
+/* export const revalidate = 604800; //7 días */
 import { Metadata, ResolvingMetadata } from "next";
 import { getProfessorById } from "@/actions";
 /* export const revalidate = 60; // 60 segundos
@@ -46,7 +46,6 @@ export default async function Home({ params }: Props  ) {
 
   const proffessor = await getProfessorById(params.id);
   const { id, name, lastName, averageRating, comments } = proffessor;
-  console.log(comments);
   if ( !proffessor ) {
     redirect('/');
   }
@@ -76,14 +75,28 @@ export default async function Home({ params }: Props  ) {
           <p className="font-bold text-2xl mt-5">Caracteristicas</p>
           <p className="mt-3 px-2 py-1 bg-slate-400/50 w-fit rounded hover:cursor-pointer"> Enojon</p>
         </div>
-        <div className="text-center md:text-left w-100 flex-col items-center md:block md:w-1/2 ">
-        {comments.map((comment: Comment) => (
-              <div key={comment.id} className="bg-gray-100 p-3 mb-2 rounded">
-                <p className="text-gray-800">{comment.comment}</p>
-                <p className="text-gray-600">Calificación: {comment.rating}</p>
-              </div>
-            ))}
-        </div>
+        <div className="text-center md:text-left w-100 flex-col items-center md:block md:w-1/2">
+  {console.log(comments)}
+  {comments.map((comment: Comment) => (
+    <div key={comment.id} className="shadow-md p-3 mb-4 rounded flex">
+      
+      <div className="flex-col items-center justify-between w-1/2 ">
+        <p className="text-gray-800">{comment.comment}</p>
+        <p className="text-gray-600 mt-2">
+          {comment.professorCharacteristics.map((characteristic, index) => (
+            <span key={index} className="p-1 text-black rounded-md mx-2 bg-gray-200">{characteristic} </span>
+          ))}
+        </p>
+      </div>
+      <div className="flex-col items-center justify-between w-1/2">
+      <p className="font-bold text-4xl text-right md:ml-auto mr-10 my-auto"> {averageRating}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
       </div>
       
     </div>
