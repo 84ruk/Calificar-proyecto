@@ -9,6 +9,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
 import { ProfessorModule } from './professor/professor.module';
 import { FilesModule } from './files/files.module';
+import { PostModule } from './post/post.module';
+
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { FilesModule } from './files/files.module';
     ProfessorModule,
     FilesModule,
     AuthModule,
-  ],
+    PostModule
+  ]
+
 })
 export class AppModule {}

@@ -108,11 +108,6 @@ export class ProfessorService {
     }
 }
 
-
-  
-  private isValidProfessorCharacteristics(characteristics: ProfessorCharacteristic[]): boolean {
-    return characteristics.every(characteristic => Object.values(ProfessorCharacteristic).includes(characteristic));
-  }
   
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, page = 1 } = paginationDto;
@@ -133,4 +128,33 @@ export class ProfessorService {
     
   }
 
+  async likeProfessor(professorId: string) {
+    const professor = await this.professorRepository.findOne({ where: { id: professorId } });
+    if (!professor) {
+        throw new Error(`Professor with id ${professorId} not found`);
+    }
+    professor.likes++;
+    return this.professorRepository.save(professor);
+}
+
+async dislikeProfessor(professorId: string) {
+    const professor = await this.professorRepository.findOne({ where: { id: professorId } });
+    if (!professor) {
+        throw new Error(`Professor with id ${professorId} not found`);
+    }
+    professor.dislikes++;
+    return this.professorRepository.save(professor);
+}
+
+async getProfessorStats(professorId: string) {
+    const professor = await this.professorRepository.findOne({ where: { id: professorId } });
+    if (!professor) {
+        throw new Error(`Professor with id ${professorId} not found`);
+    }
+    return {
+        likes: professor.likes,
+        dislikes: professor.dislikes,
+        comments: professor.comments.length,
+    };
+}
 }

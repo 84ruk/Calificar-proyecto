@@ -14,6 +14,13 @@ export class Professor {
 
   @Column({ length: 100 })
   lastName: string;
+  
+  @Column({ default: 0 })
+  likes: number;
+
+  @Column({ default: 0 })
+  dislikes: number;
+
 
   @Column({ type: 'float', default: 0 })
   averageRating: number;
@@ -21,6 +28,7 @@ export class Professor {
   @ManyToMany(() => User, (user) => user.professorsRated)
   @JoinTable()
   usersRated: User[];
+  
 
   @OneToMany(() => Comment, (comment) => comment.professor)
   comments: Comment[];
