@@ -1,7 +1,5 @@
 'use server'
 
-import prisma from '@/lib/prisma';
-import bcrypt from "bcrypt";
 
 export const registerUser = async( name: string, email: string, password: string ) => {
   try {

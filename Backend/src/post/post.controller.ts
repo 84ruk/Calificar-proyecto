@@ -1,12 +1,13 @@
 // src/post/post.controller.ts
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, ValidationPipe, Patch, Req } from '@nestjs/common';
-import { CreatePostDto, UpdatePostDto } from './dto';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ValidationPipe, Patch, Req, UseGuards } from '@nestjs/common';
+import { CreateCommentDto, CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Post as PostEntity } from './entities/post.entity';
 import { Auth, GetUser } from 'src/auth/decorators';
 import { User } from 'src/auth/entities/user.entity';
 import { ValidRoles } from 'src/auth/interfaces';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('posts')
 export class PostController {
@@ -29,14 +30,13 @@ export class PostController {
     @GetUser() user: User,
   ) {
 
-    // Mapea los datos del DTO a un objeto de tipo Post
 
     // Llama al servicio para crear el post
     return await this.postService.createPost(createPostDto, user);
   }
   
 
-  @Patch('/:id')
+  @Patch(':id')
   @Auth( ValidRoles.superUser )
     async updatePost(
       @Param('id') postId: string,
@@ -50,6 +50,16 @@ export class PostController {
   @Delete(':id')
   async deletePostById(@Param('id') postId: string): Promise<void> {
     await this.postService.deletePostById(postId);
+  }
+
+  @Post(':postId/comments')
+  @Auth()
+  async createComment(
+    @Param('postId') postId: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @Req() req,
+  ) {
+    return this.postService.createComment(postId, createCommentDto, req.user);
   }
 
 }

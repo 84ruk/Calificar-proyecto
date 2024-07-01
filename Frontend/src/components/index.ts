@@ -10,6 +10,10 @@ export * from './ui/top-menu/TopMenu';
 
 export * from './ui/pagination/Pagination'
 
+
+export * from './blog/PostGridItem'
+export * from './blog/PostsGrid'
+
 /* 
 
 

@@ -11,12 +11,12 @@ import { CommentPost } from './entities/comment-post.entity';
 
 
 @Module({
-  controllers: [PostController],
-  providers: [PostService],
   imports: [
     TypeOrmModule.forFeature([ Post, CommentPost ]),
     AuthModule,
   ],
+  providers: [PostService],
+  controllers: [PostController],
   exports: [
     PostService,
     TypeOrmModule,

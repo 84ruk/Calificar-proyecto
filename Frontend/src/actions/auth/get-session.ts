@@ -1,36 +1,44 @@
 // server.js
 'use server';
-
-import { useGetSessionStore } from '@/store';
-import { sleep } from '@/utils';
+// Importa el store de Zustand o el equivalente
+import { useAuthStore } from '@/store';
 import { cookies } from 'next/headers';
 
 export async function getSession() {
-  await sleep(2);
-  const cookieStore = cookies();
-  
-  // Verifica si cookieStore existe y si get('token') no es undefined
-  const cookieValue = cookieStore?.get('token');
-  
-  if (cookieValue) {
-    // Si cookieValue existe, desestructura la propiedad 'value'
+
+
+  try {
+
+    // Si no hay datos de sesión en el almacenamiento en caché, realiza la petición al backend
+    const cookieStore = cookies();
+    const cookieValue = cookieStore?.get('token');
+
+    if (!cookieValue) {
+      return { isAuthenticated: false };
+    }
+
     const { value } = cookieValue;
     const url = `${process.env.URL_BACKEND}/auth/check-status`;
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${value}`
+        Authorization: `Bearer ${value}`,
       },
     });
 
-    
-    const data = await response.json();
-    return data;
-  } else {
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(`API request failed: ${data.message || 'Internal server error'}`);
+    }
 
-    console.log('El valor de la cookie "token" es undefined.');
-    return null; // O devuelve algún valor predeterminado o lanza una excepción
+    const data = await response.json();
+
+
+    return { isAuthenticated: true, userData: data };
+  } catch (error) {
+    console.log(error)
+    return null; // O devuelve un valor predeterminado basado en la lógica de tu aplicación
   }
 }

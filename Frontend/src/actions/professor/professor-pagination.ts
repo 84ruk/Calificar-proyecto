@@ -15,7 +15,7 @@ export const getPaginatedProfessorsWithImages = async ({ page = 1, limit = 10 }:
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error('Error al obtener mascotas:', error);
+    console.error('Error al obtener profesores:', error);
     return { currentPage: 1, totalPages: 1, pets: [] }; // Manejar el error según tus necesidades
   }
 };

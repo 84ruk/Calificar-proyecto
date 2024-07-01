@@ -1,6 +1,6 @@
-import { IsString, IsNotEmpty, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreatePostDto {
+export class UpdatePostDto {
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -8,12 +8,5 @@ export class CreatePostDto {
   @IsNotEmpty()
   @IsString()
   content: string;
-
-  @IsNotEmpty()
-  @IsDate()
-  createdAt: Date;
-
-  @IsNotEmpty()
-  @IsString()
-  authorId: string; // Asumiendo que solo necesitas el ID del autor para crear el post
+  // Agrega más validaciones si lo necesitas
 }

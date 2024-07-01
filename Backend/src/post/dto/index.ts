@@ -1,2 +1,3 @@
-export { UpdatePostDto } from "./create-post.dto";
-export { CreatePostDto } from "./update-post.dto";
+export { UpdatePostDto } from "./update-post.dto";
+export { CreatePostDto } from "./create-post.dto";
+export { CreateCommentDto } from "./create-comment.dto";
