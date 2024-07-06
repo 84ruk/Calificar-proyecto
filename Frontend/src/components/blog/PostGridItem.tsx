@@ -19,7 +19,11 @@ export const PostGridItem = ({ post }: Props) => {
   
   const { id, author, title, content, createdAt  } = post;
   const { name, avatar, id: authorId } = author;
+
+  console.log(post)
+
   return (
+    <Link href={`/blog/${id}`} className="block">
     <div className="bg-white shadow-lg rounded-lg p-6 mx-auto my-4 flex items-center justify-center">
       <div className="flex-1 w-100">
         <div className="flex items-center mb-2">
@@ -34,5 +38,6 @@ export const PostGridItem = ({ post }: Props) => {
         </div>
       </div>
     </div>
+    </Link>
   );
 };
