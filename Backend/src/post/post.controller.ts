@@ -62,4 +62,9 @@ export class PostController {
     return this.postService.createComment(postId, createCommentDto, req.user);
   }
 
+  @Patch(':id/like')
+  async likePost(@Param('id') id: string) {
+    await this.postService.incrementLikes(id);
+  }
+
 }

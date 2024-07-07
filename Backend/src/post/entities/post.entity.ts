@@ -21,4 +21,7 @@ export class Post {
 
   @OneToMany(() => CommentPost, comment => comment.post)
   comments: CommentPost[];
+
+  @Column({ default: 0 })
+  likeCount: number; // Agregar el campo likeCount
 }

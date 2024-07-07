@@ -26,9 +26,23 @@ export class PostService {
       skip: (page - 1) * limit,
       relations: ['author'],
     });
-    
+  
     const totalPages = Math.ceil(total / limit);
-    
+  
+    const postIds = posts.map(post => post.id);
+    const commentCounts = await this.commentPostRepository
+      .createQueryBuilder('comment')
+      .select('comment.postId', 'postId')
+      .addSelect('COUNT(comment.id)', 'count')
+      .where('comment.postId IN (:...postIds)', { postIds })
+      .groupBy('comment.postId')
+      .getRawMany();
+  
+    const commentCountMap = commentCounts.reduce((acc, { postId, count }) => {
+      acc[postId] = count;
+      return acc;
+    }, {});
+  
     return {
       posts: posts.map(post => ({
         id: post.id,
@@ -37,15 +51,17 @@ export class PostService {
         createdAt: post.createdAt,
         author: {
           id: post.author.id,
-          name: post.author.fullName, // Cambiar fullName por el nombre real del campo
+          name: post.author.fullName, 
         },
+        commentCount: commentCountMap[post.id] || 0,
+        likeCount: post.likeCount,
       })),
       total,
       currentPage: page,
       totalPages,
     };
   }
-
+  
   async getPostById(postId: string): Promise<any> {
     const post = await this.postRepository
       .createQueryBuilder('post')
@@ -58,6 +74,7 @@ export class PostService {
         'post.title',
         'post.content',
         'post.createdAt',
+        'post.likeCount',
         'author.fullName',
         'comments.id',
         'comments.content',
@@ -65,18 +82,21 @@ export class PostService {
         'commentAuthor.fullName',
       ])
       .getOne();
-
+  
     if (!post) {
       throw new NotFoundException(`Post with ID ${postId} not found`);
     }
-
+  
+    // Obtener el conteo de comentarios
+    const commentCount = await this.commentPostRepository.count({ where: { post: { id: postId } } });
+  
     // Transformar el objeto antes de devolverlo
     const transformedPost = {
       id: post.id,
       title: post.title,
       content: post.content,
       createdAt: post.createdAt,
-      author: post.author.fullName, // Solo incluye el fullName del autor
+      author: post.author.fullName, 
       comments: post.comments.map(comment => ({
         id: comment.id,
         content: comment.content,
@@ -85,9 +105,15 @@ export class PostService {
           fullName: comment.author.fullName,
         },
       })),
+      commentCount, 
+      likeCount: post.likeCount,
     };
-
+  
     return transformedPost;
+  }
+  
+  async incrementLikes(postId: string): Promise<void> {
+    await this.postRepository.increment({ id: postId }, 'likeCount', 1);
   }
 
 
@@ -104,23 +130,18 @@ async createPost( createPostDto: CreatePostDto, user: User) {
   }
 
   async updatePost(postId: string, updatePostDto: UpdatePostDto, user: User): Promise<string> {
-    // Buscar el post en la base de datos
     const post = await this.postRepository.findOne({ where: { id: postId } });
 
-    // Verificar si el post existe
     if (!post) {
       throw new NotFoundException('El post no fue encontrado.');
     }
 
-    // Verificar si el usuario tiene permiso para actualizar el post
     if (post.author.id !== user.id) {
       throw new UnauthorizedException('No tienes permiso para actualizar este post.');
     }
 
-    // Aplicar las actualizaciones proporcionadas
     Object.assign(post, updatePostDto);
 
-    // Guardar el post actualizado en la base de datos
     await this.postRepository.save(post);
 
     return 'El post ha sido actualizado correctamente.';
@@ -152,7 +173,6 @@ async createPost( createPostDto: CreatePostDto, user: User) {
     comment.author = user;
     comment.post = post;
 
-    // Guardar el comentario utilizando el repositorio de comentarios
     const savedComment = await this.commentPostRepository.save(comment);
 
     return savedComment;
