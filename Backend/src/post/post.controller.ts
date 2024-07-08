@@ -63,8 +63,15 @@ export class PostController {
   }
 
   @Patch(':id/like')
+  @Auth()
   async likePost(@Param('id') id: string) {
     await this.postService.incrementLikes(id);
+  }
+
+  @Patch(':id/unlike') // Ruta para dar "unlike"
+  @Auth()
+  async unlikePost(@Param('id') id: string) {
+    await this.postService.unlikePost(id);
   }
 
 }

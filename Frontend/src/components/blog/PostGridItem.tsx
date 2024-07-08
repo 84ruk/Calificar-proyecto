@@ -1,35 +1,44 @@
 'use client'
 
-
 import { Post } from "@/interfaces";
 import Link from "next/link";
 import { useState } from "react";
 import { FaHeart } from 'react-icons/fa';
+import clsx from 'clsx';
+import { likePost, unLikePost } from "@/actions/blog/create-comment-post"; 
 
 interface Props {
   post: Post;
 }
 
-export const PostGridItem = ({ post }) => {
+export const PostGridItem = ({ post }: Props) => {
   const { id, author, title, content, createdAt, commentCount, likeCount } = post;
-  const { name, avatar, id: authorId } = author;
+  const { name } = author;
 
   const [likes, setLikes] = useState(likeCount);
+  const [isLiked, setIsLiked] = useState(false); 
 
-  const handleLike = async () => {
-    try {
-      const response = await fetch(`/posts/${id}/like`, { method: 'PATCH' });
-      if (response.ok) {
-        setLikes(likes + 1);
-      } else {
-        console.error('Error liking the post');
+  const handleLike = async (event) => {
+    event.preventDefault(); 
+    
+    if (isLiked) {
+      try {
+        await unLikePost(id);
+        setLikes(likes - 1); 
+        setIsLiked(false); 
+      } catch (error) {
+        console.error('Error unliking the post:', error);
       }
-    } catch (error) {
-      console.error('Error liking the post:', error);
+    } else {
+      try {
+        await likePost(id); 
+        setLikes(likes + 1); 
+        setIsLiked(true); 
+      } catch (error) {
+        console.error('Error liking the post:', error);
+      }
     }
   };
-
-  console.log(post);
 
   return (
     <Link href={`/blog/${id}`} className="block">
@@ -50,7 +59,8 @@ export const PostGridItem = ({ post }) => {
               </p>
             </div>
             <FaHeart
-              className="text-red-500 cursor-pointer"
+              className={clsx('cursor-pointer', { 'text-red-500': isLiked, 'text-black': !isLiked })}
+              style={{ fill: isLiked && 'red', stroke: 'black', fontSize: '17px' }}
               onClick={handleLike}
             />
           </div>

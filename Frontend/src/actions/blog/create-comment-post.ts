@@ -34,3 +34,53 @@ export const submitComment = async (postId: string, comment: string): Promise<vo
     }
   };
   
+
+  export const likePost = async (postId: string): Promise<void> => {
+    try {
+      const cookieStore = cookies();
+      const cookieValue = cookieStore?.get('token');
+
+      const { value } = cookieValue;
+
+      const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${value}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al enviar el like.');
+      }
+
+      // Puedes manejar cualquier lógica adicional aquí, como actualizar la UI después de un like exitoso.
+    } catch (error) {
+      console.log(error)
+    }
+    
+  };
+
+
+  export const unLikePost = async (postId: string): Promise<void> => {
+    try {
+      const cookieStore = cookies();
+      const cookieValue = cookieStore?.get('token');
+
+      const { value } = cookieValue;
+
+      const response = await fetch(`http://localhost:3001/posts/${postId}/unlike`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${value}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al quitar el like.');
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }

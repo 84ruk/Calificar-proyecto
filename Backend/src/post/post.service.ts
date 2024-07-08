@@ -178,6 +178,20 @@ async createPost( createPostDto: CreatePostDto, user: User) {
     return savedComment;
   }
 
- 
+  async unlikePost(postId: string): Promise<void> {
+    // Encuentra el post por su ID
+    const post = await this.postRepository.findOne({ where: { id: postId } });
+
+    // Verifica si el post existe
+    if (!post) {
+      throw new NotFoundException(`Post with ID ${postId} not found`);
+    }
+
+    // Decrementa los likes (o realiza la lógica específica para "unlike")
+    post.likeCount -= 1;
+
+    // Guarda el post actualizado en la base de datos
+    await this.postRepository.save(post);
+  }
   
 }
