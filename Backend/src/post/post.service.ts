@@ -193,5 +193,23 @@ async createPost( createPostDto: CreatePostDto, user: User) {
     // Guarda el post actualizado en la base de datos
     await this.postRepository.save(post);
   }
+
+  async likeComment(commentId: string): Promise<CommentPost> {
+    const comment = await this.commentPostRepository.findOne({ where: { id: commentId } });
+    if (comment) {
+      comment.countLikes += 1;
+      await this.commentPostRepository.save(comment);
+    }
+    return comment;
+  }
+
+  async unlikeComment(commentId: string): Promise<CommentPost> {
+    const comment = await this.commentPostRepository.findOne({ where: { id: commentId } });
+    if (comment && comment.countLikes > 0) {
+      comment.countLikes -= 1;
+      await this.commentPostRepository.save(comment);
+    }
+    return comment;
+  }
   
 }

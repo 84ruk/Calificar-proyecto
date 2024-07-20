@@ -2,8 +2,9 @@
 import { fetchPostById } from '../../../actions/index'; 
 import { MdChatBubbleOutline } from 'react-icons/md';
 import { IoHeartOutline } from 'react-icons/io5';
-import CommentField from './CommentField';
+import CommentField from '../../../components/blog/CommentField';
 import { submitComment } from '@/actions/blog/create-comment-post';
+import InteractionUI from '@/components/blog/InteractionUI';
 export const revalidate = 3600 // revalidate the data at most every hour
  
 export default async function Page({
@@ -11,11 +12,11 @@ export default async function Page({
 }: {
   params: { id: string }
 }) {
-
   const post = await fetchPostById(id)
+  const { commentCount, likeCount } = post;
+  console.log('post', post)
 
 
-   console.log('post', post)
 
 
   return (
@@ -29,16 +30,7 @@ export default async function Page({
       </div>
       <h1 className="text-2xl font-bold mb-3">{post.title}</h1>
       <p className="text-gray-700 mb-4">{post.content}</p>
-      <div className="flex space-x-4">
-        <div className="flex items-center space-x-1">
-          <IoHeartOutline className="w-6 h-6 text-black" />
-          <span>{post.likes ? post.likes.length : '0'}</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <MdChatBubbleOutline className="w-6 h-6 text-black" />
-          <span>{post.comments.length}</span>
-        </div>
-      </div>
+      <InteractionUI postId={id} initialLikes={likeCount} commentCount={commentCount}/>
       <h3 className="text-lg font-semibold mt-5">Comentar</h3>
       <CommentField postId={id} />
       <h3 className="text-lg font-semibold mt-4">Comentarios</h3>

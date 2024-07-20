@@ -13,6 +13,9 @@ export class CommentPost {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
+  @Column({ default: 0 })
+  countLikes: number;
+
   @ManyToOne(() => User, user => user.comments)
   @JoinColumn({ name: 'userId' })
   author: User;

@@ -7,15 +7,10 @@ export const fetchPostById = async (id: string) => {
 
     try {
 
-        
-        const cookieStore = cookies();
-        const cookieValue = cookieStore?.get('token');
-        const { value } = cookieValue;
+
         const response = await fetch(`http://localhost:3001/posts/${id}`, {
             method: 'GET',
-            headers: {
-                Authorization: `Bearer ${value}`
-            }
+            
         });
         /* console.log(response)  DA ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR POR QUEEEEE, DA ERRPR INVESTIGAR SI ES NORMAL O NO DEBE DE IR AQUI EL CONSOLE LOG*/
         console.log(response)

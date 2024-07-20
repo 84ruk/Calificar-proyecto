@@ -74,4 +74,15 @@ export class PostController {
     await this.postService.unlikePost(id);
   }
 
+  @Patch('comments/:id/like')
+  @Auth()
+  async likeComment(@Param('id') id: string) {
+    await this.postService.likeComment(id);
+  }
+
+  @Patch('comments/:id/unlike')
+  @Auth()
+  async unlikeComment(@Param('id') id: string) {
+    await this.postService.unlikeComment(id);
+  }
 }

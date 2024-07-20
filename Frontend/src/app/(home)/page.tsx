@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { getPaginatedPostsWithImages } from '@/actions';
 import { Pagination, ProductGrid, Title } from '@/components';
 import { PostGridItem } from "@/components";
+import AuthMessage from "@/components/ui/error/AuthMessage";
 
 
 
@@ -26,7 +27,7 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <>
-
+   <AuthMessage />
     <section>
         <h2 className="font-bold text-4xl antialiased">Anuncios</h2>
         <div className="flex-col-span-2 mx-auto justify-center items-center bg-white  w-full h-full shadow-md rounded-lg p-8 max-w-3xl">
