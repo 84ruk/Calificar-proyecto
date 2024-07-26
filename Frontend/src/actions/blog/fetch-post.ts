@@ -12,8 +12,6 @@ export const fetchPostById = async (id: string) => {
             method: 'GET',
             
         });
-        /* console.log(response)  DA ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR POR QUEEEEE, DA ERRPR INVESTIGAR SI ES NORMAL O NO DEBE DE IR AQUI EL CONSOLE LOG*/
-        console.log(response)
         if (!response.ok) {
           throw new Error('Error en la solicitud al backend');
         }

@@ -5,7 +5,7 @@ import { IoHeartOutline } from 'react-icons/io5';
 import CommentField from '../../../components/blog/CommentField';
 import { submitComment } from '@/actions/blog/create-comment-post';
 import InteractionUI from '@/components/blog/InteractionUI';
-export const revalidate = 3600 // revalidate the data at most every hour
+export const revalidate = 120 
  
 export default async function Page({
   params: { id },
@@ -14,7 +14,6 @@ export default async function Page({
 }) {
   const post = await fetchPostById(id)
   const { commentCount, likeCount } = post;
-  console.log('post', post)
 
 
 

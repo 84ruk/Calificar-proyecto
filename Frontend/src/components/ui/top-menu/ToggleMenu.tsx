@@ -1,6 +1,20 @@
+import { logout } from "@/actions/auth/logout";
 import Link from "next/link";
+import { useRouter } from 'next/navigation'
 
-export const ToggleMenu = ({ toggleDropdown, userData, isOpen }) => {
+export const ToggleMenu = ({ toggleDropdown, userData, isOpen, onLogout  }) => {
+    const router = useRouter()
+    // Función para manejar el logout
+    const handleLogout = async () => {
+      const result = await logout();
+      if (result.ok) {
+        onLogout();
+      } else {
+        // Muestra un mensaje de error si el logout falla
+        console.log(result.message);
+      }
+    };
+  
 
     return(
         <div className=" relative" >
@@ -44,7 +58,9 @@ export const ToggleMenu = ({ toggleDropdown, userData, isOpen }) => {
                                   <Link href="#" className="text-gray-600 hover:bg-gray-100 block py-2 px-4">Evaluar profesor</Link>
                                 </li>
                                 <li>
-                                  <Link href="#" className="text-gray-600 hover:bg-gray-100 block py-2 px-4">Cerrar sesión</Link>
+                                  <button 
+                                  onClick={ handleLogout }
+                                  className="text-gray-600 hover:bg-gray-100 block py-2 px-4">Cerrar sesión</button>
                                 </li>
                               </ul>
                             </div>

@@ -6,16 +6,16 @@ import { useAuthStore } from '@/store';
 import { getSession } from '@/actions/auth/get-session';
 import { UserData } from '@/interfaces';
 import { ToggleMenu } from './ToggleMenu';
-
+import { logout } from '@/actions/auth/logout';
+import { useRouter } from 'next/navigation';
 
 export const TopMenu = () => {
 
 
-
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
-    console.log(userData.userData.roles[0] !== 'user')
     setIsOpen(prevIsOpen => !prevIsOpen); // Invertir el estado anterior
   };
   
@@ -43,6 +43,17 @@ export const TopMenu = () => {
   const sessionChecked = useAuthStore(state => state.sessionChecked);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.ok) {
+      clearSession();
+      router.refresh()
+      setIsOpen(false);
+    } else {
+      console.log(result.message);
+    }
+  };
+
 useEffect(() => {
   if (!sessionChecked) {
     fetchSession();
@@ -56,53 +67,17 @@ useEffect(() => {
     if (!sessionChecked) {
       fetchSession();
     }
-  }, [sessionChecked, isAuthenticated]);
+  }, [sessionChecked, isAuthenticated ]);
   
-/* 
-
-  const fetchSession = async () => {
-    // Solo hace la petición si no se ha limpiado la sesión
-    const sessionData = await getSession();
-
-    const { isAuthenticated } = sessionData;
-    if (!sessionChecked) {
-
-
-      if (!isAuthenticated) {
-        const { response } = sessionData;
-        
-        try {
-
-
-          if (isAuthenticated) {
-            
-            // Solo establece los datos de sesión si la respuesta es exitosa
-            setSessionData(sessionData);
-          } else {
-            console.log('hola hola')
-            // Limpia la sesión si hay un problema con la respuesta
-            clearSession();
-          }
-        } catch (error) {
-          console.error('Error al verificar la sesión:', error);
-          clearSession();
-        }
-      } else {
-        console.log('hola hola')
-      }
-    }
-  }; */
 
   const fetchSession = async () => {
     if (!sessionChecked) {
       const sessionData = await getSession();
 
       if( !sessionData ){
-        console.log(sessionData)
         clearSession();
       }
       else if (sessionData.isAuthenticated) {
-        console.log(sessionData)
         setSessionData(sessionData);
       } else {
         clearSession();
@@ -110,6 +85,7 @@ useEffect(() => {
     }
   };
   
+
 
   return (
     <header className="mt-5 p-5 flex justify-between items-center text-black">
@@ -135,7 +111,7 @@ useEffect(() => {
       (sessionChecked ? (
               isAuthenticated ? (
                 
-                <ToggleMenu toggleDropdown={ toggleDropdown } userData={ userData } isOpen={ isOpen } />
+                <ToggleMenu toggleDropdown={ toggleDropdown } userData={ userData } isOpen={ isOpen } onLogout={handleLogout}  />
 
 
               ) : (
