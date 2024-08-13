@@ -1,21 +1,23 @@
-// comment.entity.ts
-
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Professor } from './professor.entity';
 import { ProfessorComment } from './professor-comment.entity';
-
+import { User } from 'src/auth/entities/user.entity';
 
 export enum ProfessorCharacteristic {
   RESPETUOSO = 'Respetuoso',
   MUCHATAREA = 'Mucha Tarea',
-  ENOJON = 'Enojon',
   MUCHOTRABAJO = 'Mucho Trabajo',
-
+  PUNTUAL = 'Puntual',
+  AMABLE = 'Amable',
+  ORDINARIO = 'Ordinario',
+  EXCELENTE = 'Excelente',
+  ENOJON = 'Enojon',
+  AMISTOSO = 'Amistoso',
+  DIVERTIDO = 'Divertido',
 }
 
 @Entity()
 export class Comment {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -25,12 +27,16 @@ export class Comment {
   @Column({ type: 'float' })
   rating: number;
 
-  @Column({ type: 'enum', enum: ProfessorCharacteristic, array: true }) // Cambia aquí
-  professorCharacteristics: string[]; // Cambia aquí
+  @Column({ type: 'enum', enum: ProfessorCharacteristic, array: true })
+  professorCharacteristics: ProfessorCharacteristic[];
+
 
   @ManyToOne(() => Professor, (professor) => professor.comments, { onDelete: 'CASCADE' })
   professor: Professor;
   
   @OneToMany(() => ProfessorComment, pc => pc.comment)
   professorComments: ProfessorComment[];
+
+
+
 }

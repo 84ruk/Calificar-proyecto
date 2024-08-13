@@ -6,9 +6,9 @@ import { Repository } from 'typeorm';
 import { CreateProfessorDto } from './dto';
 import { RatingCommentDto } from './dto';
 import { Professor } from './entities/professor.entity';
-import { Comment, ProfessorCharacteristic } from './entities/comment.entity';
+import { Comment, ProfessorCharacteristic } from './entities/comment.entity'; //pasar a enum
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { classToPlain } from 'class-transformer';
+
 
 @Injectable()
 export class ProfessorService {
@@ -27,7 +27,7 @@ export class ProfessorService {
   async getProfessorById(term: string): Promise<Professor> {
     const professor = await this.professorRepository.findOne({
       where: { id: term },
-      relations: ['comments'], // Cargar la relación 'comments'
+      relations: ['comments', 'comments.user'], // Cargar la relación 'comments'
     });
   
     if (!professor) {
@@ -72,41 +72,37 @@ export class ProfessorService {
         const professor = await this.getProfessorById(professorId);
 
         const validCharacteristics = ratingCommentDto.professorCharacteristics.filter(characteristic =>
-            ProfessorCharacteristic[characteristic] !== undefined
+            Object.values(ProfessorCharacteristic).includes(characteristic as ProfessorCharacteristic)
         );
 
         if (validCharacteristics.length === 0) {
             throw new BadRequestException('No valid professor characteristics provided');
         }
 
-        const mappedCharacteristics = validCharacteristics.map(characteristic => ProfessorCharacteristic[characteristic]);
-
-
         const comment = new Comment();
         comment.comment = ratingCommentDto.comment;
         comment.rating = ratingCommentDto.rating;
-        comment.professorCharacteristics = mappedCharacteristics;
+        comment.professorCharacteristics = validCharacteristics as ProfessorCharacteristic[];
+        comment.professor = professor;
 
         const savedComment = await this.commentRepository.save(comment);
 
         professor.comments.push(savedComment);
 
-        // Recalcula el averageRating
         this.recalculateAverageRating(professor);
 
-        // Guarda la entidad Professor
         const savedProfessor = await this.professorRepository.save(professor);
 
-        // Devuelve la información necesaria
         return {
             averageRating: savedProfessor.averageRating,
-            characteristics: mappedCharacteristics
+            characteristics: validCharacteristics as ProfessorCharacteristic[]
         };
     } catch (error) {
-        console.error('Error en addCommentToProfessor:', error);
+        console.error('Error in addRatingComment:', error);
         throw new InternalServerErrorException('Error creating comment for professor');
     }
 }
+
 
   
   async findAll(paginationDto: PaginationDto) {

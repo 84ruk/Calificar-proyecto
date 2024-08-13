@@ -1,9 +1,8 @@
 import { CommentPost } from 'src/post/entities/comment-post.entity';
 import { Post } from 'src/post/entities/post.entity';
+import { Comment } from 'src/professor/entities/comment.entity';
 import { Professor } from 'src/professor/entities/professor.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-/* import { Product } from '../../products/entities'; */
-
 
 @Entity('users')
 export class User {
@@ -40,26 +39,20 @@ export class User {
     @JoinTable()
     professorsRated: Professor[];
 
-
     //blog Post 
     @OneToMany(() => Post, post => post.author)
     posts: Post[];
 
-
     @OneToMany(() => CommentPost, commentPost => commentPost.author)
     comments: CommentPost[];
-
+    
     @BeforeInsert()
     checkFieldsBeforeInsert() {
         this.email = this.email.toLowerCase().trim();
     }
 
-
-
-
     @BeforeUpdate()
     checkFieldsBeforeUpdate() {
         this.checkFieldsBeforeInsert();   
     }
-
 }
