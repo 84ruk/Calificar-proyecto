@@ -3,11 +3,7 @@
 
 export const getPaginatedProfessorsWithImages = async ({ page = 1, limit = 10 }: { page?: number; limit?: number } = {}) => {
   try {
-
-
-
-    
-    const response = await fetch(`${process.env.URL_BACKEND}/professors?offset=${(page - 1) * limit}&limit=${limit}`, { next: { revalidate: 3600 * 60 } });
+    const response = await fetch(`${process.env.URL_BACKEND}/professors?page=${page}&limit=${limit}`, { next: { revalidate: 3600 * 60 } });
 
     if (!response.ok) {
       throw new Error('Error en la solicitud al backend');
@@ -16,9 +12,10 @@ export const getPaginatedProfessorsWithImages = async ({ page = 1, limit = 10 }:
     return result;
   } catch (error) {
     console.error('Error al obtener profesores:', error);
-    return { currentPage: 1, totalPages: 1, pets: [] }; // Manejar el error según tus necesidades
+    return { currentPage: 1, totalPages: 1, profes: [] }; // Manejar el error según tus necesidades
   }
 };
+
 
 export const getProfessorById = async( id: string ) => {
   try {
@@ -32,6 +29,7 @@ export const getProfessorById = async( id: string ) => {
     }
     const result = await response.json();
     return result;
+
   } catch (error) {
     return console.error('Error al obtener profesores:', error);
     

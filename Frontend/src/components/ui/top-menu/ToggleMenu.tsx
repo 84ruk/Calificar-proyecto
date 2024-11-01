@@ -2,12 +2,12 @@ import { logout } from "@/actions/auth/logout";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 
-export const ToggleMenu = ({ toggleDropdown, userData, isOpen, onLogout  }) => {
+export const ToggleMenu = ({ toggleDropdown, userData, isOpen, onLogout, isAuthenticated  }) => {
     const router = useRouter()
-    // Función para manejar el logout
+    
     const handleLogout = async () => {
       const result = await logout();
-      if (result.ok) {
+      if (result == 'Logout successful') {
         onLogout();
       } else {
         // Muestra un mensaje de error si el logout falla

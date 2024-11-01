@@ -1,7 +1,6 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Professor } from './professor.entity';
 import { ProfessorComment } from './professor-comment.entity';
-import { User } from 'src/auth/entities/user.entity';
 
 export enum ProfessorCharacteristic {
   RESPETUOSO = 'Respetuoso',
@@ -16,7 +15,7 @@ export enum ProfessorCharacteristic {
   DIVERTIDO = 'Divertido',
 }
 
-@Entity()
+@Entity('comments')
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -30,13 +29,9 @@ export class Comment {
   @Column({ type: 'enum', enum: ProfessorCharacteristic, array: true })
   professorCharacteristics: ProfessorCharacteristic[];
 
-
-  @ManyToOne(() => Professor, (professor) => professor.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Professor, (professor) => professor.comments, { onDelete: 'CASCADE', nullable: false })
   professor: Professor;
-  
-  @OneToMany(() => ProfessorComment, pc => pc.comment)
+
+  @OneToMany(() => ProfessorComment, (pc) => pc.comment)
   professorComments: ProfessorComment[];
-
-
-
 }

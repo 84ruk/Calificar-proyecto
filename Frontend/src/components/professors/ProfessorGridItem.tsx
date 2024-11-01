@@ -1,12 +1,7 @@
-// components/ProfessorGridItem.tsx
 import { IoPersonSharp } from "react-icons/io5";
 import { BiSolidLike } from "react-icons/bi";
-
 import { AiFillDislike } from "react-icons/ai";
-
 import { FaRegComment } from "react-icons/fa";
-
-
 import { Professor } from "@/interfaces";
 import Link from "next/link";
 
@@ -15,45 +10,38 @@ interface Props {
 }
 
 export const ProfessorGridItem = ({ professor }: Props) => {
-  const { id, name, lastName, averageRating } = professor;
+  const { id, name, lastName, averageRating, likes = 0, dislikes = 0, commentsCount = 0 } = professor;
 
   return (
-<div className="items-center h-full place-content-center">
-    <h2 className="text-lg font-semibold mb-2">
-      <div className="flex items-center">
-        <IoPersonSharp className="my-auto mr-2" />
-        <span>{name} {lastName}</span>
+    <article className="flex flex-col items-center h-full place-content-center p-4 border rounded-lg shadow-md">
+      <header className="flex items-center mb-3">
+        <IoPersonSharp className="text-xl mr-2" aria-label="Icono de persona" />
+        <h2 className="text-lg font-semibold">{name} {lastName}</h2>
+      </header>
+
+      <div className="text-center">
+        <p className="text-sm">Calificación promedio:</p>
+        <p className="text-2xl font-bold antialiased">{averageRating}</p>
       </div>
-    </h2>
 
-    <div className="flex  text-center items-center justify-center mt-3">
-      <p className="text-sm mr-4">Calificación promedio: </p>
-      
-    </div>
-    <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-4 space-x-4">
+        <div className="flex items-center">
+          <BiSolidLike className="mr-1" aria-label="Icono de likes" />
+          <span>{likes}</span>
+        </div>
+        <div className="flex items-center">
+          <AiFillDislike className="mr-1" aria-label="Icono de dislikes" />
+          <span>{dislikes}</span>
+        </div>
+        <div className="flex items-center">
+          <FaRegComment className="mr-1" aria-label="Icono de comentarios" />
+          <span>{commentsCount}</span>
+        </div>
+      </div>
 
-      <p className="text-2xl antialiased">{averageRating}</p>
-    </div>
-
-    <div className="flex items-center justify-center mb-3 mt-5">
-      <BiSolidLike className="mr-1" />
-      <span className="text-green-500 mr-3">1</span>
-      
-      <AiFillDislike className="mr-1" />
-      <span className="text-red-500 mr-3">1</span>
-      
-      <FaRegComment className="mr-1" />
-      <span className="text-red-500">1</span>
-
-
-      <Link href={`/profesores/${id}`} className="rounded-sm text-center mx-auto btn-primary text-white  px-2 py-1 ml-5">
-      Ver detalles
-    </Link>
-
-    
-  </div>
-</div>
-
-
+      <Link className="mt-4 btn-primary rounded-sm text-center mx-auto btn-primary text-white px-4 py-2" href={`/profesores/${id}`}>
+       Ver detalles
+      </Link>
+    </article>
   );
 };

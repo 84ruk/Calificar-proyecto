@@ -45,12 +45,11 @@ export const TopMenu = () => {
 
   const handleLogout = async () => {
     const result = await logout();
-    if (result.ok) {
+    if (result == 'Logout successful') {
       clearSession();
-      router.refresh()
       setIsOpen(false);
     } else {
-      console.log(result.message);
+      console.log(result);
     }
   };
 
@@ -111,7 +110,7 @@ useEffect(() => {
       (sessionChecked ? (
               isAuthenticated ? (
                 
-                <ToggleMenu toggleDropdown={ toggleDropdown } userData={ userData } isOpen={ isOpen } onLogout={handleLogout}  />
+                <ToggleMenu isAuthenticated={isAuthenticated} toggleDropdown={ toggleDropdown } userData={ userData } isOpen={ isOpen } onLogout={handleLogout}  />
 
 
               ) : (

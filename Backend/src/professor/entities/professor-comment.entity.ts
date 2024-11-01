@@ -1,16 +1,15 @@
-// professor-comment.entity.ts
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Professor } from './professor.entity';
 import { Comment } from './comment.entity';
 
-@Entity()
+@Entity('professor_comments')
 export class ProfessorComment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Professor, professor => professor.professorComments)
+  @ManyToOne(() => Professor, (professor) => professor.professorComments, { nullable: false })
   professor: Professor;
 
-  @ManyToOne(() => Comment, comment => comment.professorComments)
+  @ManyToOne(() => Comment, (comment) => comment.professorComments, { nullable: false })
   comment: Comment;
 }

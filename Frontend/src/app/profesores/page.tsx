@@ -17,10 +17,7 @@ export default async function ProfessorsPage({ searchParams }: Props) {
 
   const { profes, currentPage, totalPages } = await getPaginatedProfessorsWithImages({ page });
 
-
-  if ( profes.length === 0 ) {
-    redirect('/');
-  } 
+ 
 
 
 
